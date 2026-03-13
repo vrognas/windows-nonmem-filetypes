@@ -10,17 +10,17 @@
 
 $base           = "HKCU:\Software\Classes"
 $previewHandler = "{8895b1c6-b41f-4c1c-a562-0d564250836f}"
-$previewGuid    = "{D8034CFA-F34B-41FE-AD45-62FCBB52A6DA}"  # Windows Terminal preview handler
+$monacoGuid     = "{D8034CFA-F34B-41FE-AD45-62FCBB52A6DA}"  # Monaco (Windows Terminal / QuickLook)
+$plainTextGuid  = "{1531d583-8375-4d3f-b5fb-d23bbd169f22}"  # Built-in Windows plain text handler
 
-# Check for Windows Terminal (required for Monaco preview)
-try {
-    $wtInstalled = Get-AppxPackage -Name "Microsoft.WindowsTerminal" -ErrorAction SilentlyContinue
-} catch {
-    $wtInstalled = $null
-}
-if (-not $wtInstalled) {
-    Write-Warning "Windows Terminal may not be installed. The Explorer preview pane feature may not work."
-    Write-Warning "Install it with: winget install Microsoft.WindowsTerminal"
+# Check if Monaco preview handler COM server is registered (requires Windows Terminal or QuickLook)
+if (Test-Path "Registry::HKEY_CLASSES_ROOT\CLSID\$monacoGuid") {
+    $previewGuid = $monacoGuid
+    Write-Host "Monaco preview handler found — using Monaco (minimap + themed preview)"
+} else {
+    $previewGuid = $plainTextGuid
+    Write-Warning "Monaco preview handler not found — using plain text preview as fallback"
+    Write-Warning "For Monaco preview, install Windows Terminal (winget install Microsoft.WindowsTerminal) or QuickLook (scoop install quicklook)"
 }
 
 # Select editor — first one found wins
