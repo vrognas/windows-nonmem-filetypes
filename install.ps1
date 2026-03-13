@@ -20,7 +20,7 @@ if (Test-Path "Registry::HKEY_CLASSES_ROOT\CLSID\$monacoGuid") {
 } else {
     $previewGuid = $plainTextGuid
     Write-Warning "Monaco preview handler not found — using plain text preview as fallback"
-    Write-Warning "For Monaco preview, install Windows Terminal (winget install Microsoft.WindowsTerminal) or QuickLook (scoop install quicklook)"
+    Write-Warning "For Monaco preview, install PowerToys first: winget install Microsoft.PowerToys"
 }
 
 # Select editor — first one found wins

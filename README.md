@@ -8,6 +8,12 @@ Registers NONMEM and related file type associations on Windows 11 so that:
 
 No admin rights required.
 
+> **For Monaco preview** (dark theme + minimap in Explorer preview pane): install [PowerToys](https://github.com/microsoft/PowerToys) first:
+> ```
+> winget install Microsoft.PowerToys
+> ```
+> Without PowerToys the script still works, but falls back to plain text preview.
+
 ![Demo](win-nm-demo.gif)
 
 ## How to run
@@ -35,7 +41,7 @@ irm https://raw.githubusercontent.com/vrognas/windows-nonmem-filetypes/main/unin
 ## Troubleshooting
 
 - **Script is blocked** — if running the `.ps1` file directly is blocked by PowerShell execution policy, use the `irm ... | iex` method instead
-- **Preview pane not working** — make sure Windows Terminal is installed (`winget install Microsoft.WindowsTerminal`) and try pressing `Alt+P` in File Explorer
+- **Preview pane not working** — make sure PowerToys is installed (`winget install Microsoft.PowerToys`), then re-run the install script and try pressing `Alt+P` in File Explorer
 - **Script won't run at all** — some IT security policies (AppLocker, WDAC) block unsigned scripts entirely. In that case, contact your IT department
 
 ## Safety
