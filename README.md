@@ -78,6 +78,10 @@ All changes are written only to `HKCU\Software\Classes` — the current user's r
 | `.shm`    | NONMEM shrinkage map file |
 | `.f90`    | Fortran 90 source file |
 
+## License
+
+MIT — see [LICENSE](LICENSE). Use at your own risk.
+
 ## Editor priority
 
 The script automatically picks the first available editor in this order:
