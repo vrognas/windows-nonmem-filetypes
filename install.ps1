@@ -13,9 +13,13 @@ $previewHandler = "{8895b1c6-b41f-4c1c-a562-0d564250836f}"
 $previewGuid    = "{D8034CFA-F34B-41FE-AD45-62FCBB52A6DA}"  # Windows Terminal preview handler
 
 # Check for Windows Terminal (required for Monaco preview)
-$wtInstalled = Get-AppxPackage -Name "Microsoft.WindowsTerminal" -ErrorAction SilentlyContinue
+try {
+    $wtInstalled = Get-AppxPackage -Name "Microsoft.WindowsTerminal" -ErrorAction SilentlyContinue
+} catch {
+    $wtInstalled = $null
+}
 if (-not $wtInstalled) {
-    Write-Warning "Windows Terminal is not installed. The Explorer preview pane feature will not work."
+    Write-Warning "Windows Terminal may not be installed. The Explorer preview pane feature may not work."
     Write-Warning "Install it with: winget install Microsoft.WindowsTerminal"
 }
 

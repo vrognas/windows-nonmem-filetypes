@@ -32,6 +32,12 @@ To undo all changes, run the uninstall script the same way:
 irm https://raw.githubusercontent.com/vrognas/windows-nonmem-filetypes/main/uninstall.ps1 | iex
 ```
 
+## Troubleshooting
+
+- **Script is blocked** — if running the `.ps1` file directly is blocked by PowerShell execution policy, use the `irm ... | iex` method instead
+- **Preview pane not working** — make sure Windows Terminal is installed (`winget install Microsoft.WindowsTerminal`) and try pressing `Alt+P` in File Explorer
+- **Script won't run at all** — some IT security policies (AppLocker, WDAC) block unsigned scripts entirely. In that case, contact your IT department
+
 ## Safety
 
 All changes are written only to `HKCU\Software\Classes` — the current user's registry hive. This means:
