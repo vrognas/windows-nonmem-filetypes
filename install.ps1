@@ -1,12 +1,12 @@
-# Register-NonmemFileTypes.ps1
+# install.ps1
 #
-# Registers NONMEM and related file type associations on Windows.
+# Registers NONMEM and related file type associations on Windows 11.
 # - Sets PerceivedType=text and Content Type=text/plain for all extensions
 # - Adds Windows Terminal preview handler (Monaco editor with minimap)
 # - Associates extensions with a text editor (Positron > VS Code > Notepad++ > Notepad)
 #
 # No admin rights required. Run as current user.
-# Usage: irm https://raw.githubusercontent.com/viktorrognas/windows-nonmem-filetypes/main/Register-NonmemFileTypes.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/vrognas/windows-nonmem-filetypes/main/install.ps1 | iex
 
 $base           = "HKCU:\Software\Classes"
 $previewHandler = "{8895b1c6-b41f-4c1c-a562-0d564250836f}"
