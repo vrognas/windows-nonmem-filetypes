@@ -89,6 +89,7 @@ $fileTypes = @(
     @{ ext = ".f90";  handler = "fortran.f90"; label = "Fortran 90 source file"     }
 )
 
+Write-Host -NoNewline "Registering:"
 $fileTypes | ForEach-Object {
     $ext     = $_.ext
     $handler = $_.handler
@@ -114,7 +115,7 @@ $fileTypes | ForEach-Object {
     New-Item "$base\$handler\shell\open\command" -Force | Out-Null
     Set-ItemProperty "$base\$handler\shell\open\command" "(default)" "`"$editor`" `"%1`""
 
-    Write-Host -NoNewline "."
+    Write-Host -NoNewline " $ext"
 }
 
 Write-Host ""
