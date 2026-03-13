@@ -23,16 +23,38 @@ if (Test-Path "Registry::HKEY_CLASSES_ROOT\CLSID\$monacoGuid") {
     Write-Warning "For Monaco preview, install PowerToys first: winget install Microsoft.PowerToys"
 }
 
-# Select editor — first one found wins
-$editor = @(
+# Detect available editors
+$knownEditors = @(
     "${env:LOCALAPPDATA}\Programs\Positron\Positron.exe",
     "${env:LOCALAPPDATA}\Programs\Microsoft VS Code\Code.exe",
     "${env:ProgramFiles}\Notepad++\notepad++.exe",
     "${env:WINDIR}\system32\notepad.exe"
-) | Where-Object { Test-Path $_ } | Select-Object -First 1
+) | Where-Object { Test-Path $_ }
 
-if (-not $editor) {
-    Write-Error "No suitable editor found. Aborting."
+Write-Host ""
+Write-Host "Available editors:"
+$i = 1
+foreach ($e in $knownEditors) {
+    Write-Host "  [$i] $e"
+    $i++
+}
+Write-Host "  [C] Enter a custom path"
+Write-Host ""
+
+$choice = Read-Host "Select editor (default: 1)"
+
+if ($choice -eq "" -or $choice -eq "1") {
+    $editor = $knownEditors | Select-Object -First 1
+} elseif ($choice -match "^\d+$" -and [int]$choice -le $knownEditors.Count) {
+    $editor = $knownEditors[[int]$choice - 1]
+} elseif ($choice -eq "C" -or $choice -eq "c") {
+    $editor = Read-Host "Enter full path to editor executable"
+} else {
+    $editor = $knownEditors | Select-Object -First 1
+}
+
+if (-not $editor -or -not (Test-Path $editor)) {
+    Write-Error "Editor not found: $editor. Aborting."
     exit 1
 }
 
