@@ -38,6 +38,11 @@ foreach ($ext in $extensions) {
         $shellexPath = "$extPath\shellex\$previewHandler"
         if (Test-Path $shellexPath) {
             Remove-Item $shellexPath -Recurse -Force
+            # Clean up empty shellex parent if nothing else is in it
+            $shellex = "$extPath\shellex"
+            if ((Test-Path $shellex) -and (-not (Get-ChildItem $shellex))) {
+                Remove-Item $shellex -Force
+            }
         }
         Write-Host "Removed $ext"
     }
