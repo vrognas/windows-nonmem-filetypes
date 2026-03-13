@@ -66,7 +66,7 @@ if (-not $editor -or -not (Test-Path $editor)) {
 
 Write-Host "Using editor: $editor"
 
-@(
+$fileTypes = @(
     @{ ext = ".mod";  handler = "nonmem.mod";  label = "NONMEM Model File"          },
     @{ ext = ".ctl";  handler = "nonmem.ctl";  label = "NONMEM Control Stream"      },
     @{ ext = ".lst";  handler = "nonmem.lst";  label = "NONMEM List File"           },
@@ -87,7 +87,9 @@ Write-Host "Using editor: $editor"
     @{ ext = ".shk";  handler = "nonmem.shk";  label = "NONMEM Shrinkage file"      },
     @{ ext = ".shm";  handler = "nonmem.shm";  label = "NONMEM Shrinkage map file"  },
     @{ ext = ".f90";  handler = "fortran.f90"; label = "Fortran 90 source file"     }
-) | ForEach-Object {
+)
+
+$fileTypes | ForEach-Object {
     $ext     = $_.ext
     $handler = $_.handler
     $label   = $_.label
@@ -115,7 +117,17 @@ Write-Host "Using editor: $editor"
     Write-Host "Registered $ext"
 }
 
+Write-Host ""
+Write-Host "Summary:"
+Write-Host "  Editor:  $editor"
+if ($previewGuid -eq $monacoGuid) {
+    Write-Host "  Preview: Monaco (dark theme + minimap)"
+} else {
+    Write-Host "  Preview: Plain text (install PowerToys for Monaco preview)"
+}
+Write-Host "  Extensions registered: $(@($fileTypes).Count)"
+Write-Host ""
 Write-Host "Restarting File Explorer..."
 Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
 Start-Process explorer
-Write-Host "Done."
+Write-Host "Done. Press Alt+P in File Explorer to open the preview pane."
