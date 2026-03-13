@@ -7,6 +7,7 @@
 # Usage: irm https://raw.githubusercontent.com/vrognas/windows-nonmem-filetypes/main/uninstall.ps1 | iex
 
 $base = "HKCU:\Software\Classes"
+$previewHandler = "{8895b1c6-b41f-4c1c-a562-0d564250836f}"
 
 $extensions = @(
     ".mod", ".ctl", ".lst", ".clt", ".cnv", ".coi", ".cor", ".cov", ".cpu",
@@ -21,10 +22,23 @@ $handlers = @(
     "psn.scm",    "nonmem.set", "nonmem.shk", "nonmem.shm", "fortran.f90"
 )
 
+$confirm = Read-Host "This will remove NONMEM file type associations. Continue? (y/n)"
+if ($confirm -ne "y") {
+    Write-Host "Cancelled."
+    exit 0
+}
+
 foreach ($ext in $extensions) {
-    $path = "$base\$ext"
-    if (Test-Path $path) {
-        Remove-Item $path -Recurse -Force
+    $extPath = "$base\$ext"
+    if (Test-Path $extPath) {
+        # Only remove the specific values and shellex key we added — leave the rest intact
+        Remove-ItemProperty "$extPath" "(default)"      -ErrorAction SilentlyContinue
+        Remove-ItemProperty "$extPath" "PerceivedType"  -ErrorAction SilentlyContinue
+        Remove-ItemProperty "$extPath" "Content Type"   -ErrorAction SilentlyContinue
+        $shellexPath = "$extPath\shellex\$previewHandler"
+        if (Test-Path $shellexPath) {
+            Remove-Item $shellexPath -Recurse -Force
+        }
         Write-Host "Removed $ext"
     }
 }
@@ -37,6 +51,7 @@ foreach ($handler in $handlers) {
     }
 }
 
-Stop-Process -Name explorer -Force
+Write-Host "Restarting File Explorer..."
+Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
 Start-Process explorer
 Write-Host "Done."

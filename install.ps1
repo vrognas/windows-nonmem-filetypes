@@ -12,12 +12,25 @@ $base           = "HKCU:\Software\Classes"
 $previewHandler = "{8895b1c6-b41f-4c1c-a562-0d564250836f}"
 $previewGuid    = "{D8034CFA-F34B-41FE-AD45-62FCBB52A6DA}"  # Windows Terminal preview handler
 
+# Check for Windows Terminal (required for Monaco preview)
+$wtInstalled = Get-AppxPackage -Name "Microsoft.WindowsTerminal" -ErrorAction SilentlyContinue
+if (-not $wtInstalled) {
+    Write-Warning "Windows Terminal is not installed. The Explorer preview pane feature will not work."
+    Write-Warning "Install it with: winget install Microsoft.WindowsTerminal"
+}
+
+# Select editor — first one found wins
 $editor = @(
     "${env:LOCALAPPDATA}\Programs\Positron\Positron.exe",
     "${env:LOCALAPPDATA}\Programs\Microsoft VS Code\Code.exe",
     "${env:ProgramFiles}\Notepad++\notepad++.exe",
     "${env:WINDIR}\system32\notepad.exe"
 ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+
+if (-not $editor) {
+    Write-Error "No suitable editor found. Aborting."
+    exit 1
+}
 
 Write-Host "Using editor: $editor"
 
@@ -70,6 +83,7 @@ Write-Host "Using editor: $editor"
     Write-Host "Registered $ext"
 }
 
-Stop-Process -Name explorer -Force
+Write-Host "Restarting File Explorer..."
+Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
 Start-Process explorer
 Write-Host "Done."
