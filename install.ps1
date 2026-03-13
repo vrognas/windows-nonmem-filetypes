@@ -23,13 +23,19 @@ if (Test-Path "Registry::HKEY_CLASSES_ROOT\CLSID\$monacoGuid") {
     Write-Warning "For Monaco preview, install PowerToys first: winget install Microsoft.PowerToys"
 }
 
-# Detect available editors
-$knownEditors = @(
-    "${env:LOCALAPPDATA}\Programs\Positron\Positron.exe",
-    "${env:LOCALAPPDATA}\Programs\Microsoft VS Code\Code.exe",
-    "${env:ProgramFiles}\Notepad++\notepad++.exe",
-    "${env:WINDIR}\system32\notepad.exe"
-) | Where-Object { Test-Path $_ }
+# Detect available editors — search PATH first, then fall back to known install locations
+$editorCandidates = @(
+    @{ cmd = "positron";   path = "${env:LOCALAPPDATA}\Programs\Positron\Positron.exe" },
+    @{ cmd = "code";       path = "${env:LOCALAPPDATA}\Programs\Microsoft VS Code\Code.exe" },
+    @{ cmd = "notepad++";  path = "${env:ProgramFiles}\Notepad++\notepad++.exe" },
+    @{ cmd = "notepad";    path = "${env:WINDIR}\system32\notepad.exe" }
+)
+
+$knownEditors = $editorCandidates | ForEach-Object {
+    $onPath = Get-Command $_.cmd -ErrorAction SilentlyContinue
+    if ($onPath) { $onPath.Source }
+    elseif (Test-Path $_.path) { $_.path }
+} | Where-Object { $_ }
 
 Write-Host ""
 Write-Host "Available editors:"
