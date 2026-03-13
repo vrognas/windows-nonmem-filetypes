@@ -114,9 +114,10 @@ $fileTypes | ForEach-Object {
     New-Item "$base\$handler\shell\open\command" -Force | Out-Null
     Set-ItemProperty "$base\$handler\shell\open\command" "(default)" "`"$editor`" `"%1`""
 
-    Write-Host "Registered $ext"
+    Write-Host -NoNewline "."
 }
 
+Write-Host ""
 Write-Host ""
 Write-Host "Summary:"
 Write-Host "  Editor:  $editor"
