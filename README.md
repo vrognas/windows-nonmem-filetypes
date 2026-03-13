@@ -8,6 +8,8 @@ Registers NONMEM and related file type associations on Windows 11 so that:
 
 No admin rights required.
 
+![Demo](win-nm-demo.gif)
+
 ## How to run
 
 1. Press `Win + R`, type `powershell`, press Enter
